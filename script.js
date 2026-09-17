@@ -55,7 +55,7 @@ function checkAuth() {
     document.getElementById('studentDashboard').classList.remove('hidden');
     document.getElementById('studentTabSection').classList.remove('hidden');
     document.getElementById('teacherTabSection').classList.add('hidden');
-    document.getElementById('studentGreeting').textContent = `ЛИЧНЫЙ КАБИНЕТ: ${currentLoggedInStudent}`;
+    document.getElementById('studentGreeting').textContent = `КАБИНЕТ: ${currentLoggedInStudent}`;
     renderStudentFiles();
   } else {
     document.getElementById('loginCard').classList.remove('hidden');
@@ -91,7 +91,6 @@ function studentLogin() {
     errEl.style.display = 'none';
     document.getElementById('studentPassword').value = '';
 
-    // Проверяем по базе данных, является ли пароль стандартным "123"
     if (studentPasswords[name] === "123") {
       pendingPasswordChangeStudent = name;
       document.getElementById('newPasswordInput').value = '';
@@ -133,7 +132,6 @@ function saveNewPassword() {
   localStorage.setItem('logged_student', currentLoggedInStudent);
   pendingPasswordChangeStudent = null;
 
-  alert('Пароль успешно изменен!');
   checkAuth();
 }
 
@@ -218,11 +216,23 @@ function uploadHomework() {
 
     saveAllSubmissions(submissions);
     fileInput.value = '';
+    document.getElementById('fileNameDisplay').textContent = 'Нажмите или перетащите файл сюда';
+    document.getElementById('fileNameDisplay').style.color = 'var(--text-sub)';
     renderStudentFiles();
-    alert('Работа успешно загружена!');
   };
 
   reader.readAsDataURL(file);
+}
+
+function updateFileName(input) {
+  const display = document.getElementById('fileNameDisplay');
+  if (input.files && input.files.length > 0) {
+    display.textContent = `Выбран файл: ${input.files[0].name}`;
+    display.style.color = 'var(--text-main)';
+  } else {
+    display.textContent = 'Нажмите или перетащите файл сюда';
+    display.style.color = 'var(--text-sub)';
+  }
 }
 
 function renderStudentFiles() {
@@ -250,7 +260,6 @@ function renderStudentFiles() {
 }
 
 function deleteStudentFile(index) {
-  if (!confirm('Точно удалить этот файл?')) return;
   const submissions = getAllSubmissions();
   if (submissions[currentLoggedInStudent]) {
     submissions[currentLoggedInStudent].splice(index, 1);
@@ -275,7 +284,7 @@ function renderTeacherList() {
           <div style="display: flex; gap: 4px;">
             <button class="semester-btn" style="padding: 2px 6px; font-size: 0.6rem;" onclick="previewFile('${studentName}', ${fIdx})">ПРОСМОТР</button>
             <a href="${f.data}" download="${f.name}" class="semester-btn" style="padding: 2px 6px; font-size: 0.6rem; text-decoration:none;">СКАЧАТЬ</a>
-            <button class="semester-btn" style="padding: 2px 6px; font-size: 0.6rem; color:var(--nothing-red);" onclick="teacherDeleteFile('${studentName}', ${fIdx})">УДАЛИТЬ</button>
+            <button class="semester-btn" style="padding: 2px 6px; font-size: 0.6rem; color:var(--nothing-red);" onclick="teacherDeleteFile('${studentName}', ${fIdx})">УДАЛИТЙ</button>
           </div>
         </div>
       `).join('');
@@ -287,7 +296,7 @@ function renderTeacherList() {
       <div class="student-row-card" style="flex-direction: column; align-items: stretch;">
         <div style="display: flex; justify-content: space-between; align-items: center;">
           <span style="font-weight: bold; font-size: 0.75rem;">${idx + 1}. ${studentName}</span>
-          <span style="font-size: 0.65rem; padding: 2px 6px; border-radius: 4px; background: ${hasFiles ? 'rgba(46, 204, 113, 0.2); color: #2ecc71;' : 'rgba(215, 25, 33, 0.2); color: var(--nothing-red);'}">
+          <span style="font-size: 0.65rem; padding: 2px 6px; border-radius: 4px; background: ${hasFiles ? 'rgba(46, 204, 113, 0.2); color: #2ecc71;' : 'rgba(229, 25, 37, 0.2); color: var(--nothing-red);'}">
             ${hasFiles ? 'Сдал (' + studentFiles.length + ')' : 'Нет'}
           </span>
         </div>
@@ -328,20 +337,11 @@ function closePreview() {
 }
 
 function teacherDeleteFile(studentName, fileIndex) {
-  if (!confirm(`Удалить работу студента ${studentName}?`)) return;
   const submissions = getAllSubmissions();
   if (submissions[studentName]) {
     submissions[studentName].splice(fileIndex, 1);
     saveAllSubmissions(submissions);
     renderTeacherList();
-  }
-}
-
-function resetAllData() {
-  if (confirm('Сбросить все загруженные работы и пользовательские пароли студентов?')) {
-    localStorage.removeItem('homework_submissions');
-    localStorage.removeItem('student_passwords');
-    location.reload();
   }
 }
 
