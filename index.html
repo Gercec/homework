@@ -36,13 +36,13 @@
         <h2>ВХОД В СИСТЕМУ</h2>
         <div class="select-group">
           <label>ВЫБЕРИТЕ СВОЕ ИМЯ</label>
-          <select id="studentSelect" class="custom-select-trigger" style="width:100%; padding: 10px; background:var(--module-sub-bg); color:var(--text-main); border:1px solid var(--border-color); border-radius:8px;">
+          <select id="studentSelect" class="custom-select-trigger" style="width:100%; padding: 12px 14px; background:var(--module-sub-bg); color:var(--text-main); border:1px solid var(--border-color); border-radius:10px; outline:none; font-size:0.7rem;">
             <option value="">-- Выберите студента --</option>
           </select>
         </div>
         <div class="select-group" style="margin-top: 10px;">
           <label>ЛИЧНЫЙ ПАРОЛЬ</label>
-          <input type="password" id="studentPassword" placeholder="Введите пароль" style="width:100%; padding: 10px; background:var(--module-sub-bg); color:var(--text-main); border:1px solid var(--border-color); border-radius:8px; outline:none;">
+          <input type="password" id="studentPassword" placeholder="Введите пароль">
         </div>
         <button class="welcome-btn" style="margin-top: 15px;" onclick="studentLogin()">ВОЙТИ</button>
         <p id="loginError" style="color: var(--nothing-red); font-size: 0.7rem; margin-top: 8px; display: none;">Неверный пароль!</p>
@@ -55,18 +55,21 @@
       </div>
 
       <div id="studentDashboard" class="controls-module hidden">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-          <h2 id="studentGreeting" style="font-size: 0.9rem;">СТУДЕНТ</h2>
-          <button class="semester-btn" style="padding: 4px 10px;" onclick="studentLogout()">ВЫЙТИ</button>
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; border-bottom: 1px solid var(--border-color); padding-bottom: 12px;">
+          <h2 id="studentGreeting" style="font-size: 0.75rem; color: var(--text-sub); font-weight: normal;">КАБИНЕТ</h2>
+          <button class="semester-btn" style="padding: 6px 12px;" onclick="studentLogout()">ВЫЙТИ</button>
         </div>
 
-        <div class="select-group">
+        <div class="select-group" style="margin-top: 4px;">
           <label>ЗАГРУЗИТЬ НОВУЮ РАБОТУ</label>
-          <input type="file" id="homeworkFile" style="width:100%; padding: 8px; background:var(--module-sub-bg); color:var(--text-main); border:1px solid var(--border-color); border-radius:8px;">
+          <div class="file-upload-wrapper" id="dropZone">
+            <input type="file" id="homeworkFile" onchange="updateFileName(this)">
+            <span class="file-upload-text" id="fileNameDisplay">Нажмите или перетащите файл сюда</span>
+          </div>
         </div>
-        <button class="welcome-btn" style="margin-top: 10px;" onclick="uploadHomework()">ОТПРАВИТЬ РАБОТУ</button>
+        <button class="welcome-btn" style="margin-top: 4px;" onclick="uploadHomework()">ОТПРАВИТЬ РАБОТУ</button>
 
-        <h3 style="font-size: 0.8rem; margin: 20px 0 10px 0; color: var(--text-sub);">ЗАГРУЖЕННЫЕ РАБОТЫ</h3>
+        <h3 style="font-size: 0.65rem; margin: 16px 0 8px 0; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.15em;">ЗАГРУЖЕННЫЕ РАБОТЫ</h3>
         <div id="studentFilesList" style="display: flex; flex-direction: column; gap: 8px;"></div>
       </div>
     </section>
@@ -74,11 +77,8 @@
     <section id="teacherTabSection" class="tab-content hidden">
       <div class="controls-module">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
-          <h2 style="font-size: 0.9rem;">ПАНЕЛЬ ПРЕПОДАВАТЕЛЯ (РУП-121/26)</h2>
-          <div style="display: flex; gap: 6px;">
-            <button class="semester-btn" style="padding: 4px 10px;" onclick="teacherLogout()">НАЗАД</button>
-            <button class="semester-btn" style="padding: 4px 10px; color: var(--nothing-red); border-color: var(--nothing-red);" onclick="resetAllData()">СБРОСИТЬ ВСЁ</button>
-          </div>
+          <h2 style="font-size: 0.9rem;">ПАНЕЛЬ ПРЕПОДАВАТЕЛЯ</h2>
+          <button class="semester-btn" style="padding: 6px 12px;" onclick="teacherLogout()">НАЗАД</button>
         </div>
         <p style="font-size: 0.7rem; color: var(--text-sub); margin-bottom: 15px;">Список всех студентов группы. Вы можете просмотреть или скачать любую работу.</p>
         
@@ -95,7 +95,7 @@
         <p style="font-size: 0.7rem; color: var(--text-sub);">Введите пароль преподавателя для доступа к панели управления.</p>
         <div class="select-group">
           <label>ПАРОЛЬ</label>
-          <input type="password" id="teacherPasswordInput" placeholder="Введите пароль" style="width:100%; padding: 10px; background:var(--module-sub-bg); color:var(--text-main); border:1px solid var(--border-color); border-radius:8px; outline:none;">
+          <input type="password" id="teacherPasswordInput" placeholder="Введите пароль">
         </div>
         <p id="teacherLoginError" style="color: var(--nothing-red); font-size: 0.7rem; display: none;">Неверный пароль!</p>
         <div style="display: flex; gap: 8px; margin-top: 10px;">
@@ -114,7 +114,7 @@
         <p style="font-size: 0.7rem; color: var(--text-sub);">Это ваш первый вход. Пожалуйста, придумайте и установите свой личный постоянный пароль.</p>
         <div class="select-group">
           <label>НОВЫЙ ПАРОЛЬ</label>
-          <input type="password" id="newPasswordInput" placeholder="Введите новый пароль" style="width:100%; padding: 10px; background:var(--module-sub-bg); color:var(--text-main); border:1px solid var(--border-color); border-radius:8px; outline:none;">
+          <input type="password" id="newPasswordInput" placeholder="Введите новый пароль">
         </div>
         <p id="passwordError" style="color: var(--nothing-red); font-size: 0.7rem; display: none;"></p>
         <button class="welcome-btn" onclick="saveNewPassword()">СОХРАНИТЬ И ВОЙТИ</button>
