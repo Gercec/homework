@@ -130,38 +130,6 @@ h1 {
   box-shadow: 0 0 6px var(--nothing-red-glow);
 }
 
-.semester-switch {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 6px;
-  width: 100%;
-  background: var(--module-bg);
-  border: 1px solid var(--border-color);
-  padding: 4px;
-  border-radius: 12px;
-  margin-top: 16px;
-}
-
-.semester-btn {
-  padding: 8px;
-  border: 1px solid transparent;
-  background: transparent;
-  color: var(--text-muted);
-  font-size: 0.7rem;
-  letter-spacing: 0.1em;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  text-transform: uppercase;
-  text-align: center;
-}
-
-.semester-btn.active {
-  background: var(--text-main);
-  color: #000000;
-  border-color: var(--text-main);
-}
-
 .controls-module {
   background: var(--module-bg);
   border: 1px solid var(--border-color);
@@ -255,4 +223,19 @@ label {
   justify-content: space-between;
   align-items: center;
   font-size: 0.75rem;
+}
+
+.semester-btn {
+  padding: 8px;
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--text-muted);
+  font-size: 0.7rem;
+  letter-spacing: 0.1em;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-transform: uppercase;
+  text-align: center;
+  border-color: var(--border-color);
 }
