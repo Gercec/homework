@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Система сдачи ДЗ — ФизТех</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Silkscreen:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <div class="marquee-container">
+    <div class="marquee-track">
+      <div class="marquee-item">
+        СИСТЕМА ХРАНЕНИЯ ДОМАШНИХ РАБОТ &nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;&nbsp;&nbsp;&nbsp; ГРУППА РУП-121/26 &nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;&nbsp;&nbsp;&nbsp;
+      </div>
+      <div class="marquee-item">
+        СИСТЕМА ХРАНЕНИЯ ДОМАШНИХ РАБОТ &nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;&nbsp;&nbsp;&nbsp; ГРУППА РУП-121/26 &nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;&nbsp;&nbsp;&nbsp;
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    <header>
+      <h1>СДАЧА ДОМАШНИХ РАБОТ</h1>
+      <p class="subtitle">
+        <span class="dot-indicator"></span>
+        <span class="pixel-label-graphic"> РУП-121/26 // Portal v1.1 </span>
+      </p>
+      
+      <div class="semester-switch">
+        <button class="semester-btn active" id="tabStudentBtn" onclick="switchTab('student')">
+          <span class="pixel-label-graphic">01. СТУДЕНТ</span>
+        </button>
+        <button class="semester-btn" id="tabTeacherBtn" onclick="switchTab('teacher')">
+          <span class="pixel-label-graphic">02. ПРЕПОДАВАТЕЛЬ</span>
+        </button>
+      </div>
+    </header>
+
+    <section id="studentTabSection" class="tab-content">
+      <div id="loginCard" class="controls-module">
+        <h2>ВХОД В СИСТЕМУ</h2>
+        <div class="select-group">
+          <label>ВЫБЕРИТЕ СВОЕ ИМЯ</label>
+          <select id="studentSelect" class="custom-select-trigger" style="width:100%; padding: 10px; background:var(--module-sub-bg); color:var(--text-main); border:1px solid var(--border-color); border-radius:8px;">
+            <option value="">-- Выберите студента --</option>
+          </select>
+        </div>
+        <div class="select-group" style="margin-top: 10px;">
+          <label>ЛИЧНЫЙ ПАРОЛЬ</label>
+          <input type="password" id="studentPassword" placeholder="Введите пароль" style="width:100%; padding: 10px; background:var(--module-sub-bg); color:var(--text-main); border:1px solid var(--border-color); border-radius:8px; outline:none;">
+        </div>
+        <button class="welcome-btn" style="margin-top: 15px;" onclick="studentLogin()">ВОЙТИ</button>
+        <p id="loginError" style="color: var(--nothing-red); font-size: 0.7rem; margin-top: 8px; display: none;">Неверный пароль!</p>
+      </div>
+
+      <div id="studentDashboard" class="controls-module hidden">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+          <h2 id="studentGreeting" style="font-size: 0.9rem;">СТУДЕНТ</h2>
+          <button class="semester-btn" style="padding: 4px 10px;" onclick="studentLogout()">ВЫЙТИ</button>
+        </div>
+
+        <div class="select-group">
+          <label>ЗАГРУЗИТЬ НОВУЮ РАБОТУ</label>
+          <input type="file" id="homeworkFile" style="width:100%; padding: 8px; background:var(--module-sub-bg); color:var(--text-main); border:1px solid var(--border-color); border-radius:8px;">
+        </div>
+        <button class="welcome-btn" style="margin-top: 10px;" onclick="uploadHomework()">ОТПРАВИТЬ РАБОТУ</button>
+
+        <h3 style="font-size: 0.8rem; margin: 20px 0 10px 0; color: var(--text-sub);">ЗАГРУЖЕННЫЕ РАБОТЫ</h3>
+        <div id="studentFilesList" style="display: flex; flex-direction: column; gap: 8px;"></div>
+      </div>
+    </section>
+
+    <section id="teacherTabSection" class="tab-content hidden">
+      <div class="controls-module">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+          <h2 style="font-size: 0.9rem;">ПАНЕЛЬ ПРЕПОДАВАТЕЛЯ (РУП-121/26)</h2>
+          <button class="semester-btn" style="padding: 4px 10px;" onclick="resetAllData()">СБРОСИТЬ ВСЁ</button>
+        </div>
+        <p style="font-size: 0.7rem; color: var(--text-sub); margin-bottom: 15px;">Список всех студентов группы. Вы можете просмотреть или скачать любую работу.</p>
+        
+        <div id="teacherStudentsList" style="display: flex; flex-direction: column; gap: 8px;"></div>
+      </div>
+    </section>
+
+    <div class="welcome-modal-overlay" id="changePasswordModal">
+      <div class="welcome-modal" style="max-width: 400px;">
+        <div class="welcome-modal-title">
+          <span class="dot-indicator"></span>
+          <span>СМЕНА ПАРОЛЯ</span>
+        </div>
+        <p style="font-size: 0.7rem; color: var(--text-sub);">Это ваш первый вход. Пожалуйста, придумайте и установите свой личный постоянный пароль.</p>
+        <div class="select-group">
+          <label>НОВЫЙ ПАРОЛЬ</label>
+          <input type="password" id="newPasswordInput" placeholder="Введите новый пароль" style="width:100%; padding: 10px; background:var(--module-sub-bg); color:var(--text-main); border:1px solid var(--border-color); border-radius:8px; outline:none;">
+        </div>
+        <p id="passwordError" style="color: var(--nothing-red); font-size: 0.7rem; display: none;"></p>
+        <button class="welcome-btn" onclick="saveNewPassword()">СОХРАНИТЬ И ВОЙТИ</button>
+      </div>
+    </div>
+
+    <div class="welcome-modal-overlay" id="previewModal">
+      <div class="welcome-modal" style="max-width: 600px;">
+        <div class="welcome-modal-title">
+          <span class="dot-indicator"></span>
+          <span id="previewModalTitle">ПРОСМОТР РАБОТЫ</span>
+        </div>
+        <div id="previewContent" style="max-height: 400px; overflow-y: auto; background: var(--module-sub-bg); padding: 10px; border-radius: 8px; font-size: 0.75rem;"></div>
+        <button class="welcome-btn" onclick="closePreview()">ЗАКРЫТЬ</button>
+      </div>
+    </div>
+
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
