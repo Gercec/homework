@@ -29,15 +29,6 @@
         <span class="dot-indicator"></span>
         <span class="pixel-label-graphic"> РУП-121/26 // Portal v1.1 </span>
       </p>
-      
-      <div class="semester-switch">
-        <button class="semester-btn active" id="tabStudentBtn" onclick="switchTab('student')">
-          <span class="pixel-label-graphic">01. СТУДЕНТ</span>
-        </button>
-        <button class="semester-btn" id="tabTeacherBtn" onclick="switchTab('teacher')">
-          <span class="pixel-label-graphic">02. ПРЕПОДАВАТЕЛЬ</span>
-        </button>
-      </div>
     </header>
 
     <section id="studentTabSection" class="tab-content">
@@ -55,6 +46,12 @@
         </div>
         <button class="welcome-btn" style="margin-top: 15px;" onclick="studentLogin()">ВОЙТИ</button>
         <p id="loginError" style="color: var(--nothing-red); font-size: 0.7rem; margin-top: 8px; display: none;">Неверный пароль!</p>
+        
+        <div style="text-align: center; margin-top: 15px; border-top: 1px solid var(--border-color); padding-top: 12px;">
+          <button onclick="openTeacherLoginModal()" style="background: none; border: none; color: var(--text-muted); font-size: 0.65rem; cursor: pointer; text-transform: uppercase; letter-spacing: 0.1em;">
+            [ Вход для преподавателя ]
+          </button>
+        </div>
       </div>
 
       <div id="studentDashboard" class="controls-module hidden">
@@ -78,13 +75,35 @@
       <div class="controls-module">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
           <h2 style="font-size: 0.9rem;">ПАНЕЛЬ ПРЕПОДАВАТЕЛЯ (РУП-121/26)</h2>
-          <button class="semester-btn" style="padding: 4px 10px;" onclick="resetAllData()">СБРОСИТЬ ВСЁ</button>
+          <div style="display: flex; gap: 6px;">
+            <button class="semester-btn" style="padding: 4px 10px;" onclick="teacherLogout()">НАЗАД</button>
+            <button class="semester-btn" style="padding: 4px 10px; color: var(--nothing-red); border-color: var(--nothing-red);" onclick="resetAllData()">СБРОСИТЬ ВСЁ</button>
+          </div>
         </div>
         <p style="font-size: 0.7rem; color: var(--text-sub); margin-bottom: 15px;">Список всех студентов группы. Вы можете просмотреть или скачать любую работу.</p>
         
         <div id="teacherStudentsList" style="display: flex; flex-direction: column; gap: 8px;"></div>
       </div>
     </section>
+
+    <div class="welcome-modal-overlay" id="teacherLoginModal">
+      <div class="welcome-modal" style="max-width: 400px;">
+        <div class="welcome-modal-title">
+          <span class="dot-indicator"></span>
+          <span>ВХОД ДЛЯ ПРЕПОДАВАТЕЛЯ</span>
+        </div>
+        <p style="font-size: 0.7rem; color: var(--text-sub);">Введите пароль преподавателя для доступа к панели управления.</p>
+        <div class="select-group">
+          <label>ПАРОЛЬ</label>
+          <input type="password" id="teacherPasswordInput" placeholder="Введите пароль" style="width:100%; padding: 10px; background:var(--module-sub-bg); color:var(--text-main); border:1px solid var(--border-color); border-radius:8px; outline:none;">
+        </div>
+        <p id="teacherLoginError" style="color: var(--nothing-red); font-size: 0.7rem; display: none;">Неверный пароль!</p>
+        <div style="display: flex; gap: 8px; margin-top: 10px;">
+          <button class="welcome-btn" style="background: var(--module-sub-bg); border: 1px solid var(--border-color);" onclick="closeTeacherLoginModal()">ОТМЕНА</button>
+          <button class="welcome-btn" onclick="verifyTeacherPassword()">ВОЙТИ</button>
+        </div>
+      </div>
+    </div>
 
     <div class="welcome-modal-overlay" id="changePasswordModal">
       <div class="welcome-modal" style="max-width: 400px;">
