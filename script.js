@@ -34,25 +34,34 @@ studentsList.forEach(name => {
   }
 });
 
+const TEACHER_PASSWORD = "admin";
 let pendingPasswordChangeStudent = null;
 let currentLoggedInStudent = localStorage.getItem('logged_student') || null;
+let isTeacherLoggedIn = localStorage.getItem('teacher_logged') === 'true';
 
 window.addEventListener('DOMContentLoaded', () => {
   initStudentSelect();
   checkAuth();
-  renderTeacherList();
 });
 
-function switchTab(tab) {
-  const isStudent = tab === 'student';
-  document.getElementById('tabStudentBtn').classList.toggle('active', isStudent);
-  document.getElementById('tabTeacherBtn').classList.toggle('active', !isStudent);
-  
-  document.getElementById('studentTabSection').classList.toggle('hidden', !isStudent);
-  document.getElementById('teacherTabSection').classList.toggle('hidden', isStudent);
+function checkAuth() {
+  if (isTeacherLoggedIn) {
+    showTeacherSection();
+    return;
+  }
 
-  if (!isStudent) {
-    renderTeacherList();
+  if (currentLoggedInStudent) {
+    document.getElementById('loginCard').classList.add('hidden');
+    document.getElementById('studentDashboard').classList.remove('hidden');
+    document.getElementById('studentTabSection').classList.remove('hidden');
+    document.getElementById('teacherTabSection').classList.add('hidden');
+    document.getElementById('studentGreeting').textContent = `ЛИЧНЫЙ КАБИНЕТ: ${currentLoggedInStudent}`;
+    renderStudentFiles();
+  } else {
+    document.getElementById('loginCard').classList.remove('hidden');
+    document.getElementById('studentDashboard').classList.add('hidden');
+    document.getElementById('studentTabSection').classList.remove('hidden');
+    document.getElementById('teacherTabSection').classList.add('hidden');
   }
 }
 
@@ -65,18 +74,6 @@ function initStudentSelect() {
     opt.textContent = name;
     select.appendChild(opt);
   });
-}
-
-function checkAuth() {
-  if (currentLoggedInStudent) {
-    document.getElementById('loginCard').classList.add('hidden');
-    document.getElementById('studentDashboard').classList.remove('hidden');
-    document.getElementById('studentGreeting').textContent = `ЛИЧНЫЙ КАБИНЕТ: ${currentLoggedInStudent}`;
-    renderStudentFiles();
-  } else {
-    document.getElementById('loginCard').classList.remove('hidden');
-    document.getElementById('studentDashboard').classList.add('hidden');
-  }
 }
 
 function studentLogin() {
@@ -94,7 +91,8 @@ function studentLogin() {
     errEl.style.display = 'none';
     document.getElementById('studentPassword').value = '';
 
-    if (pass === "123") {
+    // Проверяем по базе данных, является ли пароль стандартным "123"
+    if (studentPasswords[name] === "123") {
       pendingPasswordChangeStudent = name;
       document.getElementById('newPasswordInput').value = '';
       document.getElementById('passwordError').style.display = 'none';
@@ -142,6 +140,42 @@ function saveNewPassword() {
 function studentLogout() {
   currentLoggedInStudent = null;
   localStorage.removeItem('logged_student');
+  checkAuth();
+}
+
+function openTeacherLoginModal() {
+  document.getElementById('teacherPasswordInput').value = '';
+  document.getElementById('teacherLoginError').style.display = 'none';
+  document.getElementById('teacherLoginModal').classList.add('active');
+}
+
+function closeTeacherLoginModal() {
+  document.getElementById('teacherLoginModal').classList.remove('active');
+}
+
+function verifyTeacherPassword() {
+  const pass = document.getElementById('teacherPasswordInput').value;
+  const errEl = document.getElementById('teacherLoginError');
+
+  if (pass === TEACHER_PASSWORD) {
+    closeTeacherLoginModal();
+    isTeacherLoggedIn = true;
+    localStorage.setItem('teacher_logged', 'true');
+    showTeacherSection();
+  } else {
+    errEl.style.display = 'block';
+  }
+}
+
+function showTeacherSection() {
+  document.getElementById('studentTabSection').classList.add('hidden');
+  document.getElementById('teacherTabSection').classList.remove('hidden');
+  renderTeacherList();
+}
+
+function teacherLogout() {
+  isTeacherLoggedIn = false;
+  localStorage.removeItem('teacher_logged');
   checkAuth();
 }
 
